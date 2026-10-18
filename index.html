@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff2f7">
+  <title>Nuestros recuerdos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="candado" id="candado">
+    <button class="sobre" id="sobre" aria-label="Abrir la carta">
+      <span class="sobre-solapa"></span>
+      <span class="sobre-frente"></span>
+      <span class="sello">♥</span>
+    </button>
+    <p class="pista" id="pista">Toca la carta para abrirla</p>
+
+    <section class="papel" id="papel" hidden>
+      <h2>Para ti, mi amor</h2>
+      <p>Escribe nuestra clave de 6 números para entrar a nuestros recuerdos.</p>
+      <div class="clave" id="clave" aria-label="Clave de 6 números"></div>
+      <p class="error" id="error" role="alert"></p>
+      <div class="teclado" id="teclado"></div>
+    </section>
+  </div>
+  <div class="petalos" id="petalos" aria-hidden="true"></div>
+
+  <header class="barra" id="barra">
+    <button class="atras" id="btnAtras" hidden aria-label="Volver al menú">‹ Menú</button>
+    <h1 class="logo">M</h1>
+    <button class="salir" id="btnSalir" aria-label="Salir y volver a la carta">Salir</button>
+  </header>
+
+  <main id="principal">
+
+    <!-- MENÚ PRINCIPAL -->
+    <section class="vista" id="vMenu" data-vista="menu">
+      <header class="portada">
+        <h2 id="titulo">Tú y yo, siempre</h2>
+        <p id="subtitulo">Cada foto, un pedacito de nuestra historia</p>
+      </header>
+      <div class="menu">
+        <button class="opcion" data-ir="cartas">
+          <span class="op-icono" aria-hidden="true">💌</span>
+          <strong>Cartas</strong>
+          <small id="cuentaCartas"></small>
+        </button>
+        <button class="opcion" data-ir="recuerdos">
+          <span class="op-icono" aria-hidden="true">📸</span>
+          <strong>Recuerdos</strong>
+          <small id="cuentaRecuerdos"></small>
+        </button>
+      </div>
+      <p class="modo-local" id="modoLocal" hidden>Modo de prueba: lo que subas se guarda solo en este aparato. Configura la nube en config.js para compartirlo entre los dos.</p>
+    </section>
+
+    <!-- RECUERDOS: fotos y videos -->
+    <section class="vista" id="vRecuerdos" data-vista="recuerdos" hidden>
+      <div class="herramientas">
+        <nav class="tabs" aria-label="Filtro">
+          <button class="tab activa" data-filtro="todas">Todo</button>
+          <button class="tab" data-filtro="fotos">Fotos</button>
+          <button class="tab" data-filtro="videos">Videos</button>
+          <button class="tab" data-filtro="favoritas">♥ Favoritos</button>
+        </nav>
+        <label class="tamano" title="Tamaño">
+          <span class="sr">Tamaño</span>
+          <input type="range" id="tamano" min="120" max="320" value="200">
+        </label>
+        <button class="boton" id="btnSubir">♥ Subir fotos o videos</button>
+        <input type="file" id="archivo" accept="image/*,video/*" multiple hidden>
+      </div>
+
+      <p class="contador" id="contador"></p>
+
+      <section class="vacio" id="vacio" hidden>
+        <div class="vacio-marco">♥</div>
+        <h2></h2>
+        <p></p>
+      </section>
+
+      <section class="galeria" id="galeria" aria-live="polite"></section>
+    </section>
+
+    <!-- CARTAS -->
+    <section class="vista" id="vCartas" data-vista="cartas" hidden>
+      <div class="titulo-vista">
+        <h2>Nuestras cartas</h2>
+        <div class="acciones-titulo">
+          <button class="boton" id="btnNuevaCarta">♥ Escribir carta</button>
+          <button class="boton contorno" id="btnSubirCarta">⇧ Subir carta</button>
+        </div>
+        <input type="file" id="archivoCarta" hidden multiple
+               accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      </div>
+      <section class="vacio" id="vacioCartas" hidden>
+        <div class="vacio-marco">💌</div>
+        <h2>Aún no hay cartas</h2>
+        <p>Escribe la primera o sube un archivo (.txt, .pdf, .doc o .docx).</p>
+      </section>
+      <section class="cartas" id="listaCartas"></section>
+    </section>
+  </main>
+
+  <div class="soltar" id="soltar"><span>Suelta las fotos o videos para guardar el recuerdo</span></div>
+
+  <!-- Visor de fotos y videos -->
+  <div class="visor" id="visor" hidden>
+    <button class="v-cerrar" id="vCerrar" aria-label="Cerrar">✕</button>
+    <button class="v-nav v-prev" id="vPrev" aria-label="Anterior">‹</button>
+    <img id="vImg" alt="">
+    <video id="vVid" controls playsinline hidden></video>
+    <button class="v-nav v-next" id="vNext" aria-label="Siguiente">›</button>
+    <div class="v-acciones">
+      <button id="vFav">♡ Favorito</button>
+      <button id="vBorrar">Eliminar</button>
+    </div>
+  </div>
+
+  <!-- Leer una carta -->
+  <div class="modal" id="mLeer" hidden>
+    <article class="hoja" role="dialog" aria-modal="true" aria-labelledby="lTitulo">
+      <h2 id="lTitulo"></h2>
+      <time id="lFecha"></time>
+      <div class="hoja-archivo" id="lArchivo" hidden>
+        <p id="lArchivoNombre"></p>
+        <div class="hoja-acciones">
+          <button class="sec" id="lAbrir">Abrir archivo</button>
+          <button class="sec" id="lDescargar">Descargar</button>
+        </div>
+        <iframe class="pdf" id="lPdf" title="Vista previa del PDF" hidden></iframe>
+      </div>
+      <div class="hoja-texto" id="lTexto"></div>
+      <div class="hoja-acciones">
+        <button class="sec" id="lEditar">Editar</button>
+        <button class="sec" id="lBorrar">Eliminar</button>
+        <button class="boton" id="lCerrar">Cerrar</button>
+      </div>
+    </article>
+  </div>
+
+  <!-- Escribir / editar una carta -->
+  <div class="modal" id="mEditar" hidden>
+    <form class="hoja" id="formCarta" role="dialog" aria-modal="true" aria-labelledby="eCabecera">
+      <h2 id="eCabecera">Nueva carta</h2>
+      <label class="sr" for="eTitulo">Título</label>
+      <input id="eTitulo" maxlength="80" placeholder="Título de la carta" autocomplete="off" required>
+      <label class="sr" for="eTexto">Carta</label>
+      <textarea id="eTexto" placeholder="Escribe aquí lo que sientes…" required></textarea>
+      <div class="hoja-acciones">
+        <button type="button" class="sec" id="eCancelar">Cancelar</button>
+        <button type="submit" class="boton">Guardar carta</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="aviso" id="aviso" role="status"></div>
+
+  <script src="supabase.min.js"></script>
+  <script src="mammoth.browser.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
